@@ -47,7 +47,7 @@ export default function DeckDetailPage() {
       fetchDeck();
       fetchCards();
     }
-  }, [deckId]);
+  }, [deckId, fetchDeck, fetchCards]);
 
   const fetchDeck = async () => {
     try {
