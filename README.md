@@ -411,3 +411,4 @@ For issues and questions, please open a GitHub issue.
 ---
 
 Built with ❤️ using Next.js, Drizzle, and Neon
+# Updated NEXTAUTH_URL
