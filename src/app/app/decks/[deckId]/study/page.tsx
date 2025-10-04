@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -73,7 +73,7 @@ export default function StudyPage() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [showAnswer, currentIndex, queue, handleRating]);
 
-  const fetchQueue = async () => {
+  const fetchQueue = useCallback(async () => {
     try {
       const res = await fetch(`/api/reviews/queue?deckId=${deckId}`);
       if (res.ok) {
@@ -93,9 +93,9 @@ export default function StudyPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [deckId]);
 
-  const handleRating = async (rating: Rating) => {
+  const handleRating = useCallback(async (rating: Rating) => {
     const currentCard = queue[currentIndex];
     if (!currentCard) return;
 
@@ -124,7 +124,7 @@ export default function StudyPage() {
     } catch (error) {
       console.error('Failed to submit review:', error);
     }
-  };
+  }, [queue, currentIndex, reviewCount]);
 
   if (isLoading) {
     return (
@@ -143,7 +143,7 @@ export default function StudyPage() {
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-2xl font-bold mb-2">All Done!</h2>
               <p className="text-muted-foreground mb-2">
-                You've reviewed {reviewCount} cards in this session.
+                You&apos;ve reviewed {reviewCount} cards in this session.
               </p>
               <p className="text-muted-foreground">
                 Come back later for more reviews.

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -49,7 +49,7 @@ export default function DeckDetailPage() {
     }
   }, [deckId, fetchDeck, fetchCards]);
 
-  const fetchDeck = async () => {
+  const fetchDeck = useCallback(async () => {
     try {
       const res = await fetch(`/api/decks/${deckId}`);
       if (res.ok) {
@@ -59,9 +59,9 @@ export default function DeckDetailPage() {
     } catch (error) {
       console.error('Failed to fetch deck:', error);
     }
-  };
+  }, [deckId]);
 
-  const fetchCards = async () => {
+  const fetchCards = useCallback(async () => {
     try {
       const res = await fetch(`/api/cards?deckId=${deckId}`);
       if (res.ok) {
@@ -73,7 +73,7 @@ export default function DeckDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [deckId]);
 
   const handleCreateCard = async (e: React.FormEvent) => {
     e.preventDefault();

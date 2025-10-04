@@ -88,7 +88,7 @@ export default function DashboardPage() {
           Welcome back, {session?.user?.name || 'Learner'}!
         </h1>
         <p className="text-muted-foreground">
-          Let's continue your learning journey
+          Let&apos;s continue your learning journey
         </p>
       </div>
 
