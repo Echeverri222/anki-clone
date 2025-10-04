@@ -85,7 +85,7 @@ export default function DashboardPage() {
       {/* Welcome Header */}
       <div>
         <h1 className="text-4xl font-bold mb-2">
-          Welcome back, {session?.user?.name || &apos;Learner&apos;}!
+          Welcome back, {session?.user?.name || 'Learner'}!
         </h1>
         <p className="text-muted-foreground">
           Let's continue your learning journey

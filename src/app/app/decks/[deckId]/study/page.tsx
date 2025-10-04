@@ -143,7 +143,7 @@ export default function StudyPage() {
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-2xl font-bold mb-2">All Done!</h2>
               <p className="text-muted-foreground mb-2">
-                You&apos;ve reviewed {reviewCount} cards in this session.
+                You've reviewed {reviewCount} cards in this session.
               </p>
               <p className="text-muted-foreground">
                 Come back later for more reviews.
