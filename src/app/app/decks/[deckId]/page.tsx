@@ -42,13 +42,6 @@ export default function DeckDetailPage() {
   const [showCardModal, setShowCardModal] = useState(false);
   const [newCard, setNewCard] = useState({ front: '', back: '', tags: '' });
 
-  useEffect(() => {
-    if (deckId) {
-      fetchDeck();
-      fetchCards();
-    }
-  }, [deckId, fetchDeck, fetchCards]);
-
   const fetchDeck = useCallback(async () => {
     try {
       const res = await fetch(`/api/decks/${deckId}`);
@@ -74,6 +67,13 @@ export default function DeckDetailPage() {
       setIsLoading(false);
     }
   }, [deckId]);
+
+  useEffect(() => {
+    if (deckId) {
+      fetchDeck();
+      fetchCards();
+    }
+  }, [deckId, fetchDeck, fetchCards]);
 
   const handleCreateCard = async (e: React.FormEvent) => {
     e.preventDefault();

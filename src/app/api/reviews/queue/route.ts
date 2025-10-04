@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/db/client';
 import { cards, decks, reviewLogs } from '@/db/schema';
-import { eq, and, lte, sql } from 'drizzle-orm';
+import { eq, and, lte, gte, sql } from 'drizzle-orm';
 
 // GET /api/reviews/queue - Get today's review queue for a deck
 export async function GET(request: NextRequest) {
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
           eq(reviewLogs.deckId, deckId),
           eq(reviewLogs.userId, session.user.id),
           lte(reviewLogs.createdAt, now),
-          lte(startOfDay, reviewLogs.createdAt)
+          gte(reviewLogs.createdAt, startOfDay)
         )
       );
 

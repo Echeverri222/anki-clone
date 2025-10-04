@@ -37,42 +37,6 @@ export default function StudyPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [reviewCount, setReviewCount] = useState(0);
 
-  useEffect(() => {
-    if (deckId) {
-      fetchQueue();
-    }
-  }, [deckId, fetchQueue]);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!showAnswer) {
-        if (e.key === ' ' || e.key === 'Enter') {
-          e.preventDefault();
-          setShowAnswer(true);
-        }
-      } else {
-        switch (e.key) {
-          case '1':
-            handleRating('again');
-            break;
-          case '2':
-            handleRating('hard');
-            break;
-          case '3':
-            handleRating('good');
-            break;
-          case '4':
-            handleRating('easy');
-            break;
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [showAnswer, currentIndex, queue, handleRating]);
-
   const fetchQueue = useCallback(async () => {
     try {
       const res = await fetch(`/api/reviews/queue?deckId=${deckId}`);
@@ -125,6 +89,42 @@ export default function StudyPage() {
       console.error('Failed to submit review:', error);
     }
   }, [queue, currentIndex, reviewCount]);
+
+  useEffect(() => {
+    if (deckId) {
+      fetchQueue();
+    }
+  }, [deckId, fetchQueue]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (!showAnswer) {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          setShowAnswer(true);
+        }
+      } else {
+        switch (e.key) {
+          case '1':
+            handleRating('again');
+            break;
+          case '2':
+            handleRating('hard');
+            break;
+          case '3':
+            handleRating('good');
+            break;
+          case '4':
+            handleRating('easy');
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [showAnswer, currentIndex, queue, handleRating]);
 
   if (isLoading) {
     return (
