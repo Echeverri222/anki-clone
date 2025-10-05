@@ -1,414 +1,288 @@
-# Stackki - Spaced Repetition System
+# Stackki - Anki-Style Spaced Repetition System
 
-A production-ready Anki-style spaced repetition system built with Next.js 14, Neon Postgres, and deployed on Vercel.
+A modern, full-stack spaced repetition system built with Next.js 14, featuring Google OAuth authentication, AWS S3 image uploads, and a sophisticated SM-2 algorithm for optimal learning retention.
 
-## Features
+## 🚀 Live Demo
 
-- 🧠 **SM-2 Algorithm**: Scientifically-proven spaced repetition algorithm
-- 📚 **Multiple Card Types**: Basic, Cloze, and Image-occlusion cards
-- 🎯 **Smart Review Queue**: Daily limits, learning buckets, and progress tracking
-- 🔐 **Authentication**: Email/password + OAuth (Google, GitHub)
-- 📱 **Responsive UI**: Beautiful, accessible interface with Tailwind + shadcn/ui
-- ⌨️ **Keyboard Shortcuts**: Fast reviews with keyboard shortcuts (1-4 for ratings)
-- 📊 **Statistics**: Track your learning progress and streaks
-- 🖼️ **Media Support**: S3-backed image and audio storage
-- 📤 **Import/Export**: CSV import and JSON export
-- 🧪 **Tested**: Unit tests with Vitest, E2E tests with Playwright
+**Production URL**: [https://anki-clone-kappa.vercel.app](https://anki-clone-kappa.vercel.app)
 
-## Tech Stack
+## ✨ Features
 
-- **Frontend**: Next.js 14 (App Router), React, TypeScript, Tailwind CSS
-- **UI Components**: shadcn/ui, Radix UI
-- **Backend**: Next.js API Routes, Server Actions
-- **Database**: Neon Postgres (serverless)
-- **ORM**: Drizzle ORM
-- **Auth**: NextAuth.js
-- **Storage**: AWS S3 (pre-signed uploads)
-- **Deployment**: Vercel
-- **Testing**: Vitest, Playwright
+### Core Functionality
+- **Spaced Repetition System (SRS)** - SM-2 algorithm variant for optimal learning intervals
+- **Multiple Card Types** - Basic, Cloze, and Image-occlusion cards
+- **Smart Review Queue** - "Due Today", "New", and "Learning" buckets with daily limits
+- **Progress Tracking** - Detailed statistics and learning analytics
 
-## Prerequisites
+### User Experience
+- **Google OAuth Authentication** - Secure login with Google accounts
+- **Responsive Design** - Works perfectly on desktop and mobile
+- **Keyboard Shortcuts** - 1-4 keys for quick rating during study sessions
+- **Real-time Updates** - Instant feedback and progress tracking
 
-- Node.js 18+ and npm
-- Neon Postgres account
-- AWS account (for S3 storage)
-- Vercel account (for deployment)
-- GitHub/Google OAuth apps (optional, for social login)
+### Advanced Features
+- **Image Support** - Upload images to flashcards with AWS S3 integration
+- **Markdown Support** - Rich text formatting in card content
+- **Tagging System** - Organize cards with custom tags
+- **Import/Export** - CSV import and JSON export functionality
+- **Deck Management** - Create, edit, and organize multiple decks
 
-## Local Development Setup
+## 🏗️ Architecture
 
-### 1. Clone and Install
+### Frontend
+- **Next.js 14** with App Router
+- **React 18** with TypeScript
+- **Tailwind CSS** for styling
+- **shadcn/ui** components for consistent UI
+- **Lucide React** for icons
 
+### Backend
+- **Next.js API Routes** for server-side logic
+- **NextAuth.js** for authentication
+- **Drizzle ORM** for database operations
+- **Neon Postgres** for data persistence
+- **AWS S3** for image storage
+
+### Database Schema
+- **Users** - Authentication and profile data
+- **Decks** - Card collections with settings
+- **Cards** - Individual flashcards with SRS data
+- **Review Logs** - Learning history and statistics
+
+## 🛠️ Technology Stack
+
+### Core Technologies
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **Drizzle ORM** - Type-safe database toolkit
+
+### Authentication & Security
+- **NextAuth.js** - Authentication framework
+- **Google OAuth** - Social login provider
+- **bcryptjs** - Password hashing
+- **Rate limiting** - API protection
+
+### Database & Storage
+- **Neon Postgres** - Serverless PostgreSQL
+- **AWS S3** - Image storage with pre-signed URLs
+- **Drizzle Kit** - Database migrations and studio
+
+### Testing & Quality
+- **Vitest** - Unit testing framework
+- **Playwright** - End-to-end testing
+- **ESLint** - Code linting and formatting
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Neon Postgres database
+- AWS S3 bucket (for images)
+- Google OAuth credentials
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Echeverri222/anki-clone.git
+   cd anki-clone
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Fill in your environment variables:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://..."
+   
+   # NextAuth
+   NEXTAUTH_SECRET="your-secret-key"
+   NEXTAUTH_URL="http://localhost:3000"
+   
+   # Google OAuth
+   GOOGLE_CLIENT_ID="your-google-client-id"
+   GOOGLE_CLIENT_SECRET="your-google-client-secret"
+   
+   # AWS S3 (for images)
+   AWS_ACCESS_KEY_ID="your-aws-access-key"
+   AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
+   AWS_REGION="us-east-1"
+   AWS_S3_BUCKET_NAME="your-bucket-name"
+   ```
+
+4. **Set up the database**
+   ```bash
+   npm run db:push
+   npm run seed
+   ```
+
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📱 Usage
+
+### Creating Your First Deck
+1. **Sign in** with your Google account
+2. **Click "New Deck"** on the dashboard
+3. **Enter deck name** and description
+4. **Set daily limits** for new and review cards
+
+### Adding Cards
+1. **Open your deck** from the dashboard
+2. **Click the "+" button** to add a new card
+3. **Fill in the front and back** content
+4. **Add tags** for organization (optional)
+5. **Upload an image** if needed (optional)
+6. **Click "Create Card"**
+
+### Studying Cards
+1. **Click "Study"** on any deck
+2. **Review the front** of the card
+3. **Click "Show Answer"** to reveal the back
+4. **Rate your performance** using 1-4 keys or buttons:
+   - **1 (Again)** - Card was too difficult
+   - **2 (Hard)** - Card was somewhat difficult
+   - **3 (Good)** - Card was just right
+   - **4 (Easy)** - Card was too easy
+
+### Keyboard Shortcuts
+- **1-4** - Rate card difficulty during study
+- **Space** - Show/hide answer
+- **Enter** - Submit rating
+
+## 🔧 Development
+
+### Available Scripts
 ```bash
-cd stackki
-npm install
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run test         # Run unit tests
+npm run test:ui      # Run tests with UI
+npm run test:e2e     # Run end-to-end tests
+npm run db:generate  # Generate database migrations
+npm run db:migrate   # Run database migrations
+npm run db:push      # Push schema to database
+npm run db:studio    # Open Drizzle Studio
+npm run seed         # Seed database with sample data
 ```
 
-### 2. Database Setup
-
-1. Create a Neon Postgres database at [neon.tech](https://neon.tech)
-2. Copy the connection string (pooled connection)
-3. Create `.env.local` in the project root:
-
-```env
-# Database
-DATABASE_URL="postgres://USER:PASS@HOST:PORT/DB?sslmode=require"
-
-# NextAuth
-NEXTAUTH_SECRET="your-secret-here-generate-with-openssl-rand-base64-32"
-NEXTAUTH_URL="http://localhost:3000"
-
-# OAuth Providers (optional)
-GITHUB_ID="your-github-oauth-id"
-GITHUB_SECRET="your-github-oauth-secret"
-GOOGLE_ID="your-google-oauth-id"
-GOOGLE_SECRET="your-google-oauth-secret"
-
-# AWS S3
-AWS_REGION="us-east-1"
-AWS_ACCESS_KEY_ID="your-aws-access-key"
-AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
-AWS_S3_BUCKET="your-bucket-name"
-
-# Cron (optional, for Vercel Cron)
-CRON_SECRET="your-cron-secret"
+### Project Structure
+```
+src/
+├── app/                 # Next.js App Router
+│   ├── api/            # API routes
+│   ├── app/            # Protected app pages
+│   ├── signin/         # Authentication pages
+│   └── globals.css     # Global styles
+├── components/         # React components
+│   ├── ui/            # shadcn/ui components
+│   └── ImageUpload.tsx # Image upload component
+├── db/                 # Database configuration
+│   ├── client.ts      # Database connection
+│   └── schema.ts      # Database schema
+├── lib/                # Utility libraries
+│   ├── auth.ts        # NextAuth configuration
+│   ├── srs.ts         # Spaced repetition algorithm
+│   └── utils.ts       # Utility functions
+└── types/              # TypeScript type definitions
 ```
 
-**Generate NEXTAUTH_SECRET:**
-```bash
-openssl rand -base64 32
-```
+## 🚀 Deployment
 
-### 3. Run Database Migrations
+### Vercel (Recommended)
+1. **Connect your GitHub repository** to Vercel
+2. **Add environment variables** in Vercel dashboard
+3. **Deploy automatically** on every push to main
 
-```bash
-# Generate migration files from schema
-npm run db:generate
+### Environment Variables for Production
+Make sure to set these in your deployment platform:
+- `DATABASE_URL` - Neon Postgres connection string
+- `NEXTAUTH_SECRET` - Random secret for NextAuth
+- `NEXTAUTH_URL` - Your production domain
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+- `AWS_ACCESS_KEY_ID` - AWS access key
+- `AWS_SECRET_ACCESS_KEY` - AWS secret key
+- `AWS_REGION` - AWS region
+- `AWS_S3_BUCKET_NAME` - S3 bucket name
 
-# Apply migrations to database
-npm run db:migrate
-
-# Alternative: Push schema directly (for development)
-npm run db:push
-```
-
-### 4. Seed Database (Optional)
-
-```bash
-npm run seed
-```
-
-This creates a demo user:
-- Email: `demo@stackki.com`
-- Password: `password123`
-
-### 5. Start Development Server
-
-```bash
-npm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000)
-
-## AWS S3 Setup
-
-### 1. Create S3 Bucket
-
-```bash
-aws s3 mb s3://your-stackki-bucket --region us-east-1
-```
-
-### 2. Configure CORS
-
-Create `cors.json`:
-```json
-[
-  {
-    "AllowedHeaders": ["*"],
-    "AllowedMethods": ["GET", "PUT", "POST"],
-    "AllowedOrigins": ["http://localhost:3000", "https://your-app.vercel.app"],
-    "ExposeHeaders": ["ETag"]
-  }
-]
-```
-
-Apply CORS:
-```bash
-aws s3api put-bucket-cors --bucket your-stackki-bucket --cors-configuration file://cors.json
-```
-
-### 3. Set Bucket Policy (Public Read)
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "PublicRead",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::your-stackki-bucket/*"
-    }
-  ]
-}
-```
-
-### 4. Create IAM User
-
-1. Create IAM user with programmatic access
-2. Attach policy: `AmazonS3FullAccess` (or create custom policy with s3:PutObject, s3:GetObject)
-3. Copy Access Key ID and Secret Access Key to `.env.local`
-
-## OAuth Setup (Optional)
-
-### GitHub OAuth
-
-1. Go to GitHub Settings > Developer settings > OAuth Apps
-2. Create new OAuth App
-3. Set Authorization callback URL: `http://localhost:3000/api/auth/callback/github`
-4. Copy Client ID and Secret to `.env.local`
-
-### Google OAuth
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Create project, enable Google+ API
-3. Create OAuth 2.0 credentials
-4. Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
-5. Copy Client ID and Secret to `.env.local`
-
-## Testing
+## 🧪 Testing
 
 ### Unit Tests
-
 ```bash
 npm run test
-# or with UI
-npm run test:ui
 ```
 
-### E2E Tests
-
+### End-to-End Tests
 ```bash
 npm run test:e2e
 ```
 
-## Deployment to Vercel
+### Test Coverage
+The project includes comprehensive tests for:
+- SRS algorithm logic
+- API endpoints
+- User authentication flows
+- Card creation and management
 
-### 1. Push to GitHub
+## 📊 Performance
 
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/your-username/stackki.git
-git push -u origin main
-```
+### Optimizations
+- **Server-side rendering** for fast initial loads
+- **Image optimization** with Next.js Image component
+- **Database indexing** for efficient queries
+- **Rate limiting** to prevent abuse
+- **Caching strategies** for improved performance
 
-### 2. Deploy to Vercel
+### Monitoring
+- **Vercel Analytics** for performance insights
+- **Error tracking** with built-in error boundaries
+- **Database monitoring** through Neon dashboard
 
-1. Go to [vercel.com](https://vercel.com) and import your repository
-2. Add environment variables in Vercel dashboard (same as `.env.local`)
-3. Update OAuth callback URLs to your Vercel domain
-4. Update S3 CORS to include Vercel domain
-5. Deploy!
+## 🤝 Contributing
 
-### 3. Run Migrations on Production
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
+4. **Push to the branch** (`git push origin feature/amazing-feature`)
+5. **Open a Pull Request**
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+## 📄 License
 
-# Link to your project
-vercel link
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Run migration
-vercel env pull .env.production
-DATABASE_URL="your-production-db-url" npm run db:migrate
-```
+## 🙏 Acknowledgments
 
-Or use GitHub Actions:
+- **Anki** - Inspiration for the spaced repetition system
+- **Next.js** - Amazing React framework
+- **Vercel** - Excellent deployment platform
+- **Neon** - Serverless PostgreSQL database
+- **shadcn/ui** - Beautiful UI components
 
-```yaml
-# .github/workflows/migrate.yml
-name: Run Migrations
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'drizzle/**'
+## 📞 Support
 
-jobs:
-  migrate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - run: npm ci
-      - run: npm run db:migrate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-```
-
-### 4. Enable Vercel Cron (Optional)
-
-The `vercel.json` already configures a daily cron job. Add `CRON_SECRET` to your Vercel environment variables.
-
-## Project Structure
-
-```
-stackki/
-├── src/
-│   ├── app/                  # Next.js App Router
-│   │   ├── api/             # API routes
-│   │   │   ├── auth/        # NextAuth routes
-│   │   │   ├── cards/       # Card CRUD
-│   │   │   ├── decks/       # Deck CRUD
-│   │   │   ├── reviews/     # Review queue & submit
-│   │   │   ├── uploads/     # S3 pre-signed URLs
-│   │   │   ├── import/      # CSV import
-│   │   │   └── export/      # JSON export
-│   │   ├── app/             # Protected app pages
-│   │   │   ├── page.tsx     # Dashboard
-│   │   │   └── decks/       # Deck pages
-│   │   ├── signin/          # Auth pages
-│   │   ├── layout.tsx
-│   │   ├── page.tsx         # Landing page
-│   │   └── globals.css
-│   ├── components/
-│   │   └── ui/              # shadcn/ui components
-│   ├── db/
-│   │   ├── schema.ts        # Drizzle schema
-│   │   └── client.ts        # Database client
-│   ├── lib/
-│   │   ├── auth.ts          # NextAuth config
-│   │   ├── srs.ts           # SM-2 algorithm
-│   │   ├── rate-limit.ts    # Rate limiting
-│   │   └── utils.ts         # Utilities
-│   └── types/               # TypeScript types
-├── scripts/
-│   └── seed.ts              # Database seeding
-├── tests/
-│   ├── srs.test.ts          # Unit tests
-│   └── e2e/                 # E2E tests
-├── drizzle/                 # Generated migrations
-├── drizzle.config.ts
-├── package.json
-└── README.md
-```
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run db:generate` - Generate Drizzle migrations
-- `npm run db:migrate` - Run migrations
-- `npm run db:push` - Push schema directly (dev only)
-- `npm run db:studio` - Open Drizzle Studio
-- `npm run seed` - Seed database with demo data
-- `npm run test` - Run unit tests
-- `npm run test:ui` - Run tests with UI
-- `npm run test:e2e` - Run E2E tests
-
-## Database Schema
-
-### Users & Auth
-- `users` - User accounts
-- `accounts` - OAuth accounts
-- `sessions` - User sessions
-- `verification_tokens` - Email verification
-
-### Application
-- `decks` - Flashcard decks with daily limits
-- `cards` - Flashcards with SRS fields (easeFactor, interval, repetitions, dueAt)
-- `review_logs` - History of all reviews
-
-## SRS Algorithm
-
-Stackki implements a variant of the SM-2 algorithm with 4 rating levels:
-
-- **Again (1)**: Card forgotten, reset learning
-- **Hard (2)**: Difficult recall, shorter interval
-- **Good (3)**: Normal recall, standard interval
-- **Easy (4)**: Perfect recall, longer interval
-
-The algorithm maintains per-card state:
-- `easeFactor`: Difficulty multiplier (≥1.3)
-- `interval`: Days until next review
-- `repetitions`: Successful review count
-- `dueAt`: Next review date
-- `lapseCount`: Number of times forgotten
-
-## API Routes
-
-All routes require authentication except `/api/auth/*`.
-
-### Decks
-- `GET /api/decks` - List user's decks
-- `POST /api/decks` - Create deck
-- `GET /api/decks/:id` - Get deck
-- `PATCH /api/decks/:id` - Update deck
-- `DELETE /api/decks/:id` - Delete deck
-
-### Cards
-- `GET /api/cards?deckId=&q=&tag=` - List cards with filters
-- `POST /api/cards` - Create card
-- `PATCH /api/cards/:id` - Update card
-- `DELETE /api/cards/:id` - Delete card
-
-### Reviews
-- `GET /api/reviews/queue?deckId=` - Get review queue
-- `POST /api/reviews/submit` - Submit review (rate limited)
-
-### Import/Export
-- `POST /api/import/csv` - Import cards from CSV
-- `GET /api/export/json?deckId=` - Export deck as JSON
-
-### Uploads
-- `POST /api/uploads` - Get S3 pre-signed URL
-
-## Keyboard Shortcuts
-
-In study mode:
-- `Space` or `Enter` - Show answer
-- `1` - Again
-- `2` - Hard
-- `3` - Good
-- `4` - Easy
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Run tests: `npm test && npm run test:e2e`
-4. Commit your changes
-5. Push to the branch
-6. Create a Pull Request
-
-## License
-
-MIT License - feel free to use this for your own projects!
-
-## Support
-
-For issues and questions, please open a GitHub issue.
-
-## Roadmap
-
-- [ ] Mobile app (React Native)
-- [ ] Markdown editor with preview
-- [ ] Image occlusion implementation
-- [ ] Audio recording
-- [ ] Shared decks marketplace
-- [ ] Spaced repetition analytics dashboard
-- [ ] Anki import/export compatibility
-- [ ] Browser extension
-- [ ] Offline mode with sync
+If you have any questions or need help:
+- **Open an issue** on GitHub
+- **Check the documentation** above
+- **Review the code** for implementation details
 
 ---
 
-Built with ❤️ using Next.js, Drizzle, and Neon
-# Updated NEXTAUTH_URL
+**Built with ❤️ using Next.js, TypeScript, and modern web technologies.**
