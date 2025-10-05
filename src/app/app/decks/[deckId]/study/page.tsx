@@ -16,6 +16,7 @@ interface ReviewCard {
   back: string | null;
   type: 'basic' | 'cloze' | 'occlusion';
   tags: string[];
+  imageUrl?: string | null;
 }
 
 interface QueueData {
@@ -209,6 +210,13 @@ export default function StudyPage() {
         <CardContent className="flex-1 flex flex-col justify-center">
           {/* Front */}
           <div className="mb-8">
+            {currentCard.imageUrl && (
+              <img 
+                src={currentCard.imageUrl} 
+                alt="Card image" 
+                className="w-full max-w-md mx-auto h-48 object-cover rounded-lg mb-4"
+              />
+            )}
             <div className="prose prose-slate dark:prose-invert max-w-none">
               <ReactMarkdown>{currentCard.front}</ReactMarkdown>
             </div>

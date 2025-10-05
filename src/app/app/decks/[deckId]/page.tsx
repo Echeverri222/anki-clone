@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Edit, Trash2, Play, Settings, ArrowLeft } from 'lucide-react';
+import { ImageUpload } from '@/components/ImageUpload';
 
 interface Card {
   id: string;
@@ -18,6 +19,7 @@ interface Card {
   back: string | null;
   type: 'basic' | 'cloze' | 'occlusion';
   tags: string[];
+  imageUrl?: string | null;
   createdAt: Date;
   dueAt: Date;
   repetitions: number;
@@ -40,7 +42,7 @@ export default function DeckDetailPage() {
   const [cards, setCards] = useState<Card[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCardModal, setShowCardModal] = useState(false);
-  const [newCard, setNewCard] = useState({ front: '', back: '', tags: '' });
+  const [newCard, setNewCard] = useState({ front: '', back: '', tags: '', imageUrl: '' });
 
   const fetchDeck = useCallback(async () => {
     try {
@@ -92,11 +94,12 @@ export default function DeckDetailPage() {
           front: newCard.front,
           back: newCard.back,
           tags,
+          imageUrl: newCard.imageUrl || null,
         }),
       });
 
       if (res.ok) {
-        setNewCard({ front: '', back: '', tags: '' });
+        setNewCard({ front: '', back: '', tags: '', imageUrl: '' });
         setShowCardModal(false);
         fetchCards();
       }
@@ -204,6 +207,13 @@ export default function DeckDetailPage() {
                   <CardContent className="pt-6">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
+                        {card.imageUrl && (
+                          <img 
+                            src={card.imageUrl} 
+                            alt="Card image" 
+                            className="w-full h-32 object-cover rounded-md mb-2"
+                          />
+                        )}
                         <p className="font-semibold mb-2">{card.front}</p>
                         {card.back && (
                           <p className="text-sm text-muted-foreground mb-2">
@@ -322,6 +332,11 @@ export default function DeckDetailPage() {
                     onChange={(e) => setNewCard({ ...newCard, tags: e.target.value })}
                   />
                 </div>
+                <ImageUpload
+                  onImageUpload={(url) => setNewCard({ ...newCard, imageUrl: url })}
+                  onImageRemove={() => setNewCard({ ...newCard, imageUrl: '' })}
+                  currentImageUrl={newCard.imageUrl}
+                />
                 <div className="flex gap-2 justify-end">
                   <Button
                     type="button"
