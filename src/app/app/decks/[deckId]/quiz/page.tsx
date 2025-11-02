@@ -195,7 +195,7 @@ export default function QuizPage() {
           <CardTitle className="flex items-center justify-between">
             <span>
               {currentQuestion.mode === 'image-to-text'
-                ? 'Select the correct name for the highlighted image'
+                ? 'Which image matches this name?'
                 : 'Select the correct name for this image'}
             </span>
             <Badge variant="outline">
@@ -206,7 +206,12 @@ export default function QuizPage() {
         <CardContent className="space-y-6">
           {/* Mode 1: 4 images, select correct name */}
           {currentQuestion.mode === 'image-to-text' && (
-            <div className="grid grid-cols-2 gap-4">
+            <>
+              <div className="text-center p-6 bg-blue-50 rounded-lg border-2 border-blue-200">
+                <p className="text-sm text-muted-foreground mb-1">Find the image for:</p>
+                <p className="text-2xl font-bold text-blue-900">{currentQuestion.correctCard.back}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
               {currentQuestion.options.map((option) => (
                 <div
                   key={option.id}
@@ -238,7 +243,8 @@ export default function QuizPage() {
                   )}
                 </div>
               ))}
-            </div>
+              </div>
+            </>
           )}
 
           {/* Mode 2: 1 image, 4 text options */}
