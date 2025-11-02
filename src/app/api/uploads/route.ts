@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       Key: key,
       Body: buffer,
       ContentType: file.type,
-      ACL: 'public-read', // Make the file publicly readable
+      // Note: ACL removed - bucket should have public read policy instead
     });
 
     await s3Client.send(command);
