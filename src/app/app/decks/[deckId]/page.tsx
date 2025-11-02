@@ -19,7 +19,7 @@ interface Card {
   back: string | null;
   type: 'basic' | 'cloze' | 'occlusion';
   tags: string[];
-  imageUrl?: string | null;
+  mediaUrls: string[];
   createdAt: Date;
   dueAt: Date;
   repetitions: number;
@@ -94,7 +94,7 @@ export default function DeckDetailPage() {
           front: newCard.front,
           back: newCard.back,
           tags,
-          imageUrl: newCard.imageUrl || null,
+          mediaUrls: newCard.imageUrl ? [newCard.imageUrl] : [],
         }),
       });
 
@@ -207,9 +207,9 @@ export default function DeckDetailPage() {
                   <CardContent className="pt-6">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        {card.imageUrl && (
+                        {card.mediaUrls && card.mediaUrls.length > 0 && (
                           <img 
-                            src={card.imageUrl} 
+                            src={card.mediaUrls[0]} 
                             alt="Card image" 
                             className="w-full h-32 object-cover rounded-md mb-2"
                           />

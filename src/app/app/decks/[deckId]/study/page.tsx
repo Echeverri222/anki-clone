@@ -17,7 +17,7 @@ interface ReviewCard {
   back: string | null;
   type: 'basic' | 'cloze' | 'occlusion';
   tags: string[];
-  imageUrl?: string | null;
+  mediaUrls: string[];
 }
 
 interface QueueData {
@@ -48,7 +48,7 @@ export default function StudyPage() {
         
         // Combine all queues: new cards first, then learning, then due
         const allCards = [...queueData.new, ...queueData.learning, ...queueData.due];
-        console.log('Fetched cards:', allCards.map(c => ({ front: c.front, imageUrl: c.imageUrl })));
+        console.log('Fetched cards:', allCards.map(c => ({ front: c.front, mediaUrls: c.mediaUrls })));
         setQueue(allCards);
         
         if (allCards.length === 0) {
@@ -212,17 +212,17 @@ export default function StudyPage() {
         <CardContent className="flex-1 flex flex-col justify-center">
           {/* Front */}
           <div className="mb-8">
-            {currentCard.imageUrl && (
+            {currentCard.mediaUrls && currentCard.mediaUrls.length > 0 && (
               <div className="flex justify-center mb-4">
                 <img 
-                  src={currentCard.imageUrl} 
+                  src={currentCard.mediaUrls[0]} 
                   alt="Card image" 
                   className="rounded-lg object-contain max-h-96 max-w-full"
                   onError={(e) => {
-                    console.error('Failed to load image:', currentCard.imageUrl);
+                    console.error('Failed to load image:', currentCard.mediaUrls[0]);
                     e.currentTarget.style.display = 'none';
                   }}
-                  onLoad={() => console.log('Image loaded successfully:', currentCard.imageUrl)}
+                  onLoad={() => console.log('Image loaded successfully:', currentCard.mediaUrls[0])}
                 />
               </div>
             )}
