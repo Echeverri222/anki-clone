@@ -36,6 +36,8 @@ export function ImageUpload({ onImageUpload, onImageRemove, currentImageUrl, dis
     setError('');
 
     try {
+      console.log('Uploading file:', file.name, file.type);
+      
       // Get pre-signed URL from your API
       const response = await fetch('/api/uploads', {
         method: 'POST',
@@ -45,6 +47,8 @@ export function ImageUpload({ onImageUpload, onImageRemove, currentImageUrl, dis
           fileType: file.type 
         }),
       });
+      
+      console.log('Upload API response status:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
