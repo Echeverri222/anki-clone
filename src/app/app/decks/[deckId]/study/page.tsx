@@ -39,6 +39,7 @@ export default function StudyPage() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [reviewCount, setReviewCount] = useState(0);
+  const [isResetting, setIsResetting] = useState(false);
 
   const fetchQueue = useCallback(async () => {
     try {
@@ -96,6 +97,34 @@ export default function StudyPage() {
       console.error('Failed to submit review:', error);
     }
   }, [queue, currentIndex, reviewCount]);
+
+  const handleResetDeck = useCallback(async () => {
+    if (!confirm('Reset all cards in this deck? This will reset all progress and you can study them again from the beginning.')) {
+      return;
+    }
+
+    setIsResetting(true);
+    try {
+      const res = await fetch(`/api/decks/${deckId}/reset`, {
+        method: 'POST',
+      });
+
+      if (res.ok) {
+        // Refresh the queue after reset
+        await fetchQueue();
+        setCurrentIndex(0);
+        setShowAnswer(false);
+        setReviewCount(0);
+      } else {
+        alert('Failed to reset deck. Please try again.');
+      }
+    } catch (error) {
+      console.error('Reset deck error:', error);
+      alert('Failed to reset deck. Please try again.');
+    } finally {
+      setIsResetting(false);
+    }
+  }, [deckId, fetchQueue]);
 
   useEffect(() => {
     if (deckId) {
@@ -157,8 +186,16 @@ export default function StudyPage() {
               </p>
             </div>
             <div className="flex gap-2 justify-center">
+              <Button 
+                onClick={handleResetDeck} 
+                disabled={isResetting}
+                variant="default"
+              >
+                <RotateCw className="w-4 h-4 mr-2" />
+                {isResetting ? 'Resetting...' : 'Start Again'}
+              </Button>
               <Link href={`/app/decks/${deckId}`}>
-                <Button>
+                <Button variant="outline">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Deck
                 </Button>
