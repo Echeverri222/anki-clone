@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -211,15 +212,22 @@ export default function StudyPage() {
           {/* Front */}
           <div className="mb-8">
             {currentCard.imageUrl && (
-              <img 
-                src={currentCard.imageUrl} 
-                alt="Card image" 
-                className="w-full max-w-md mx-auto h-48 object-cover rounded-lg mb-4"
-              />
+              <div className="flex justify-center mb-4">
+                <Image 
+                  src={currentCard.imageUrl} 
+                  alt="Card image" 
+                  width={600}
+                  height={400}
+                  className="rounded-lg object-contain max-h-96"
+                  priority
+                />
+              </div>
             )}
-            <div className="prose prose-slate dark:prose-invert max-w-none">
-              <ReactMarkdown>{currentCard.front}</ReactMarkdown>
-            </div>
+            {currentCard.front && (
+              <div className="prose prose-slate dark:prose-invert max-w-none text-center">
+                <ReactMarkdown>{currentCard.front}</ReactMarkdown>
+              </div>
+            )}
           </div>
 
           {/* Back (shown after reveal) */}
