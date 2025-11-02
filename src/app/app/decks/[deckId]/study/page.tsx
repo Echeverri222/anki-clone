@@ -48,6 +48,7 @@ export default function StudyPage() {
         
         // Combine all queues: new cards first, then learning, then due
         const allCards = [...queueData.new, ...queueData.learning, ...queueData.due];
+        console.log('Fetched cards:', allCards.map(c => ({ front: c.front, imageUrl: c.imageUrl })));
         setQueue(allCards);
         
         if (allCards.length === 0) {
@@ -213,13 +214,15 @@ export default function StudyPage() {
           <div className="mb-8">
             {currentCard.imageUrl && (
               <div className="flex justify-center mb-4">
-                <Image 
+                <img 
                   src={currentCard.imageUrl} 
                   alt="Card image" 
-                  width={600}
-                  height={400}
-                  className="rounded-lg object-contain max-h-96"
-                  priority
+                  className="rounded-lg object-contain max-h-96 max-w-full"
+                  onError={(e) => {
+                    console.error('Failed to load image:', currentCard.imageUrl);
+                    e.currentTarget.style.display = 'none';
+                  }}
+                  onLoad={() => console.log('Image loaded successfully:', currentCard.imageUrl)}
                 />
               </div>
             )}
