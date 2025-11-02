@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Play, Settings, ArrowLeft } from 'lucide-react';
+import { Plus, Edit, Trash2, Play, Settings, ArrowLeft, Brain } from 'lucide-react';
 import { ImageUpload } from '@/components/ImageUpload';
 
 interface Card {
@@ -166,12 +166,20 @@ export default function DeckDetailPage() {
             <p className="text-muted-foreground">{deck.description}</p>
           )}
         </div>
-        <Link href={`/app/decks/${deckId}/study`}>
-          <Button size="lg" className="gap-2">
-            <Play className="w-5 h-5" />
-            Study Now
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href={`/app/decks/${deckId}/quiz`}>
+            <Button size="lg" variant="outline" className="gap-2">
+              <Brain className="w-5 h-5" />
+              Quiz
+            </Button>
+          </Link>
+          <Link href={`/app/decks/${deckId}/study`}>
+            <Button size="lg" className="gap-2">
+              <Play className="w-5 h-5" />
+              Study Now
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}
