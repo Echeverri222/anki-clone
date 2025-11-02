@@ -18,6 +18,7 @@ interface ReviewCard {
   type: 'basic' | 'cloze' | 'occlusion';
   tags: string[];
   mediaUrls: string[];
+  repetitions: number;
 }
 
 interface QueueData {
@@ -46,9 +47,12 @@ export default function StudyPage() {
         const data = await res.json();
         const queueData: QueueData = data.queue;
         
-        // Combine all queues: new cards first, then learning, then due
-        const allCards = [...queueData.new, ...queueData.learning, ...queueData.due];
-        console.log('Fetched cards:', allCards.map(c => ({ front: c.front, mediaUrls: c.mediaUrls })));
+        // Randomize new cards (first time seeing them should be random)
+        const shuffledNewCards = [...queueData.new].sort(() => Math.random() - 0.5);
+        
+        // Combine all queues: new cards (randomized) first, then learning, then due
+        const allCards = [...shuffledNewCards, ...queueData.learning, ...queueData.due];
+        console.log('Fetched cards:', allCards.map(c => ({ front: c.front, mediaUrls: c.mediaUrls, repetitions: c.repetitions })));
         setQueue(allCards);
         
         if (allCards.length === 0) {
