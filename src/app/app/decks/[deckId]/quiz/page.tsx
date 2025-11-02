@@ -229,7 +229,7 @@ export default function QuizPage() {
                   <img
                     src={option.imageUrl}
                     alt="Quiz option"
-                    className="w-full h-48 object-cover"
+                    className="w-full h-48 object-contain bg-gray-50"
                   />
                   {showResult && option.id === currentQuestion.correctCard.id && (
                     <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1">
