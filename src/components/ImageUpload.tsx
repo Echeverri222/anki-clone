@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
@@ -40,8 +41,8 @@ export function ImageUpload({ onImageUpload, onImageRemove, currentImageUrl, dis
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          filename: file.name,
-          contentType: file.type 
+          fileName: file.name,
+          fileType: file.type 
         }),
       });
 
@@ -77,9 +78,11 @@ export function ImageUpload({ onImageUpload, onImageRemove, currentImageUrl, dis
       
       {currentImageUrl ? (
         <div className="relative">
-          <img 
+          <Image 
             src={currentImageUrl} 
             alt="Card image" 
+            width={400}
+            height={128}
             className="w-full h-32 object-cover rounded-md border"
           />
           <Button
