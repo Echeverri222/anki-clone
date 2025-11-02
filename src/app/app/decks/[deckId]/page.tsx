@@ -213,33 +213,35 @@ export default function DeckDetailPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {cards.map((card) => (
                 <Card key={card.id}>
                   <CardContent className="pt-6">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        {card.mediaUrls && card.mediaUrls.length > 0 && (
-                          <img 
-                            src={card.mediaUrls[0]} 
-                            alt="Card image" 
-                            className="w-full h-32 object-cover rounded-md mb-2"
-                          />
-                        )}
-                        <p className="font-semibold mb-2">{card.front}</p>
-                        {card.back && (
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {card.back}
-                          </p>
-                        )}
-                        <div className="flex gap-1 flex-wrap">
-                          {card.tags.map((tag) => (
-                            <Badge key={tag} variant="outline">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
+                    {card.mediaUrls && card.mediaUrls.length > 0 && (
+                      <div className="mb-3 bg-gray-50 rounded-md overflow-hidden">
+                        <img 
+                          src={card.mediaUrls[0]} 
+                          alt="Card image" 
+                          className="w-full h-48 object-contain"
+                        />
                       </div>
+                    )}
+                    <div className="space-y-2">
+                      <p className="font-semibold mb-2">{card.front}</p>
+                      {card.back && (
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {card.back}
+                        </p>
+                      )}
+                      <div className="flex gap-1 flex-wrap">
+                        {card.tags.map((tag) => (
+                          <Badge key={tag} variant="outline">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex justify-end mt-4 pt-4 border-t">
                       <Button
                         variant="ghost"
                         size="sm"
