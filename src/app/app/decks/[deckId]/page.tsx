@@ -85,17 +85,21 @@ export default function DeckDetailPage() {
         .map((t) => t.trim())
         .filter((t) => t.length > 0);
 
+      const cardData = {
+        deckId,
+        type: 'basic',
+        front: newCard.front,
+        back: newCard.back,
+        tags,
+        mediaUrls: newCard.imageUrl ? [newCard.imageUrl] : [],
+      };
+      
+      console.log('Creating card with data:', cardData);
+
       const res = await fetch('/api/cards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deckId,
-          type: 'basic',
-          front: newCard.front,
-          back: newCard.back,
-          tags,
-          mediaUrls: newCard.imageUrl ? [newCard.imageUrl] : [],
-        }),
+        body: JSON.stringify(cardData),
       });
 
       if (res.ok) {
