@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 
-type QuizMode = 'image-to-text' | 'text-to-image';
+type QuizMode = 'image-to-text' | 'text-to-image' | 'write-answer';
 
 interface QuizQuestion {
   id: string;
@@ -20,7 +21,7 @@ interface QuizQuestion {
     back: string;
     imageUrl: string;
   };
-  options: Array<{
+  options?: Array<{
     id: string;
     text: string;
     imageUrl?: string;
@@ -35,6 +36,7 @@ export default function QuizPage() {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [writtenAnswer, setWrittenAnswer] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,10 +81,23 @@ export default function QuizPage() {
     }
   };
 
+  const handleWrittenAnswer = () => {
+    if (showResult || !writtenAnswer.trim()) return;
+
+    setShowResult(true);
+
+    // Check if answer is correct (case-insensitive, trimmed)
+    const isCorrect = writtenAnswer.trim().toLowerCase() === currentQuestion.correctCard.back.toLowerCase();
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+  };
+
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setSelectedAnswer(null);
+      setWrittenAnswer('');
       setShowResult(false);
     } else {
       setIsFinished(true);
@@ -196,10 +211,16 @@ export default function QuizPage() {
             <span>
               {currentQuestion.mode === 'image-to-text'
                 ? 'Which image matches this name?'
+                : currentQuestion.mode === 'write-answer'
+                ? 'Write the name of this bird'
                 : 'Select the correct name for this image'}
             </span>
             <Badge variant="outline">
-              {currentQuestion.mode === 'image-to-text' ? 'Images → Text' : 'Image → Text'}
+              {currentQuestion.mode === 'image-to-text' 
+                ? 'Images → Text' 
+                : currentQuestion.mode === 'write-answer'
+                ? 'Write Answer'
+                : 'Image → Text'}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -212,7 +233,7 @@ export default function QuizPage() {
                 <p className="text-2xl font-bold text-blue-900">{currentQuestion.correctCard.back}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
-              {currentQuestion.options.map((option) => (
+              {currentQuestion.options?.map((option) => (
                 <div
                   key={option.id}
                   className={`relative border-2 rounded-lg overflow-hidden cursor-pointer transition-all ${
@@ -258,7 +279,7 @@ export default function QuizPage() {
                 />
               </div>
               <div className="grid grid-cols-1 gap-3">
-                {currentQuestion.options.map((option) => (
+                {currentQuestion.options?.map((option) => (
                   <button
                     key={option.id}
                     onClick={() => !showResult && handleAnswer(option.id)}
@@ -288,21 +309,77 @@ export default function QuizPage() {
             </>
           )}
 
+          {/* Mode 3: Write the answer */}
+          {currentQuestion.mode === 'write-answer' && (
+            <>
+              <div className="flex justify-center mb-6">
+                <img
+                  src={currentQuestion.correctCard.imageUrl}
+                  alt="Quiz question"
+                  className="rounded-lg max-h-96 object-contain"
+                />
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">
+                    Type your answer:
+                  </label>
+                  <Input
+                    type="text"
+                    value={writtenAnswer}
+                    onChange={(e) => setWrittenAnswer(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !showResult) {
+                        handleWrittenAnswer();
+                      }
+                    }}
+                    placeholder="Enter the name..."
+                    disabled={showResult}
+                    className="text-lg"
+                    autoFocus
+                  />
+                </div>
+                {!showResult && (
+                  <Button 
+                    onClick={handleWrittenAnswer} 
+                    disabled={!writtenAnswer.trim()}
+                    className="w-full"
+                  >
+                    Submit Answer
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+
           {/* Result and Next Button */}
           {showResult && (
             <div className="pt-4 border-t">
-              <div className={`p-4 rounded-lg mb-4 ${
-                selectedAnswer === currentQuestion.correctCard.id
-                  ? 'bg-green-50 text-green-900'
-                  : 'bg-red-50 text-red-900'
-              }`}>
-                <p className="font-semibold mb-1">
-                  {selectedAnswer === currentQuestion.correctCard.id ? '✓ Correct!' : '✗ Incorrect'}
-                </p>
-                <p className="text-sm">
-                  The correct answer is: <strong>{currentQuestion.correctCard.back}</strong>
-                </p>
-              </div>
+              {(() => {
+                const isCorrect = currentQuestion.mode === 'write-answer'
+                  ? writtenAnswer.trim().toLowerCase() === currentQuestion.correctCard.back.toLowerCase()
+                  : selectedAnswer === currentQuestion.correctCard.id;
+                
+                return (
+                  <div className={`p-4 rounded-lg mb-4 ${
+                    isCorrect
+                      ? 'bg-green-50 text-green-900'
+                      : 'bg-red-50 text-red-900'
+                  }`}>
+                    <p className="font-semibold mb-1">
+                      {isCorrect ? '✓ Correct!' : '✗ Incorrect'}
+                    </p>
+                    {currentQuestion.mode === 'write-answer' && !isCorrect && (
+                      <p className="text-sm mb-1">
+                        Your answer: <strong>{writtenAnswer}</strong>
+                      </p>
+                    )}
+                    <p className="text-sm">
+                      The correct answer is: <strong>{currentQuestion.correctCard.back}</strong>
+                    </p>
+                  </div>
+                );
+              })()}
               <Button onClick={handleNext} className="w-full">
                 {currentIndex < questions.length - 1 ? 'Next Question' : 'Finish Quiz'}
               </Button>
