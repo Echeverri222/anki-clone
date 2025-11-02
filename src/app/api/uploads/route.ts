@@ -11,13 +11,31 @@ const uploadRequestSchema = z.object({
   fileType: z.string(),
 });
 
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION!,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
+function getS3Client() {
+  const region = process.env.AWS_REGION;
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const bucket = process.env.AWS_S3_BUCKET;
+
+  if (!region || !accessKeyId || !secretAccessKey || !bucket) {
+    throw new Error(
+      `Missing AWS configuration. Please set: ${[
+        !region && 'AWS_REGION',
+        !accessKeyId && 'AWS_ACCESS_KEY_ID',
+        !secretAccessKey && 'AWS_SECRET_ACCESS_KEY',
+        !bucket && 'AWS_S3_BUCKET',
+      ].filter(Boolean).join(', ')}`
+    );
+  }
+
+  return new S3Client({
+    region,
+    credentials: {
+      accessKeyId,
+      secretAccessKey,
+    },
+  });
+}
 
 // POST /api/uploads - Generate pre-signed URL for S3 upload
 export async function POST(request: NextRequest) {
@@ -29,6 +47,9 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { fileName, fileType } = uploadRequestSchema.parse(body);
+
+    // Get S3 client (will throw if config is missing)
+    const s3Client = getS3Client();
 
     // Generate unique file key
     const fileExtension = fileName.split('.').pop();
@@ -62,8 +83,9 @@ export async function POST(request: NextRequest) {
     }
 
     console.error('Generate upload URL error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

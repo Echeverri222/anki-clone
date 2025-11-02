@@ -47,7 +47,8 @@ export function ImageUpload({ onImageUpload, onImageRemove, currentImageUrl, dis
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get upload URL');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `Failed to get upload URL (${response.status})`);
       }
 
       const { uploadUrl, fileUrl } = await response.json();
@@ -66,7 +67,12 @@ export function ImageUpload({ onImageUpload, onImageRemove, currentImageUrl, dis
       // Call the callback with the final URL
       onImageUpload(fileUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
+      console.error('Upload error:', err);
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        setError('Network error: Cannot connect to server. Make sure the app is running.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Upload failed');
+      }
     } finally {
       setUploading(false);
     }
