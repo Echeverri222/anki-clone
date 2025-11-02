@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 
@@ -37,7 +36,7 @@ function getS3Client() {
   });
 }
 
-// POST /api/uploads - Generate pre-signed URL for S3 upload
+// POST /api/uploads - Upload file directly to S3 (avoids CORS issues)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -45,44 +44,55 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { fileName, fileType } = uploadRequestSchema.parse(body);
+    // Get form data
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+    
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return NextResponse.json({ error: 'File must be an image' }, { status: 400 });
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File must be smaller than 5MB' }, { status: 400 });
+    }
 
     // Get S3 client (will throw if config is missing)
     const s3Client = getS3Client();
 
     // Generate unique file key
-    const fileExtension = fileName.split('.').pop();
+    const fileExtension = file.name.split('.').pop();
     const key = `media/${session.user.id}/${randomUUID()}.${fileExtension}`;
 
-    // Create pre-signed URL for PUT request
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Upload to S3
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_S3_BUCKET!,
       Key: key,
-      ContentType: fileType,
+      Body: buffer,
+      ContentType: file.type,
+      ACL: 'public-read', // Make the file publicly readable
     });
 
-    const signedUrl = await getSignedUrl(s3Client, command, {
-      expiresIn: 3600, // URL expires in 1 hour
-    });
+    await s3Client.send(command);
 
     // Construct the public URL for the uploaded file
     const publicUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 
     return NextResponse.json({
-      uploadUrl: signedUrl,
       fileUrl: publicUrl,
       key,
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
-        { status: 400 }
-      );
-    }
-
-    console.error('Generate upload URL error:', error);
+    console.error('Upload error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json(
       { error: errorMessage },

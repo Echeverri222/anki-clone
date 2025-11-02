@@ -38,35 +38,24 @@ export function ImageUpload({ onImageUpload, onImageRemove, currentImageUrl, dis
     try {
       console.log('Uploading file:', file.name, file.type);
       
-      // Get pre-signed URL from your API
+      // Create FormData and append the file
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Upload directly through our API (which then uploads to S3)
       const response = await fetch('/api/uploads', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          fileName: file.name,
-          fileType: file.type 
-        }),
+        body: formData,
       });
       
       console.log('Upload API response status:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errorData.error || `Failed to get upload URL (${response.status})`);
+        throw new Error(errorData.error || `Failed to upload image (${response.status})`);
       }
 
-      const { uploadUrl, fileUrl } = await response.json();
-
-      // Upload to S3
-      const uploadResponse = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: { 'Content-Type': file.type },
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error('Failed to upload image');
-      }
+      const { fileUrl } = await response.json();
 
       // Call the callback with the final URL
       onImageUpload(fileUrl);
